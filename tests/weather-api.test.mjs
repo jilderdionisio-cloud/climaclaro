@@ -16,14 +16,14 @@ test('la búsqueda configura name, count=5 y language=es', async () => {
 test('el pronóstico configura las variables y tres días solicitados', async () => {
   let requestUrl;
   await getForecast(-12.04, -77.03, async (url) => { requestUrl = new URL(url); return response(200, {}); });
-  assert.equal(requestUrl.searchParams.get('current'), 'temperature_2m,relative_humidity_2m,wind_speed_10m');
-  assert.equal(requestUrl.searchParams.get('daily'), 'temperature_2m_max,temperature_2m_min,precipitation_probability_max');
+  assert.equal(requestUrl.searchParams.get('current'), 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,is_day,wind_speed_10m,wind_direction_10m');
+  assert.equal(requestUrl.searchParams.get('daily'), 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max');
   assert.equal(requestUrl.searchParams.get('timezone'), 'auto');
   assert.equal(requestUrl.searchParams.get('forecast_days'), '3');
 });
 
 test('simulación: identifica HTTP 429', async () => {
-  await assert.rejects(() => searchLocations('Lima', async () => response(429, {})), /demasiadas solicitudes/);
+  await assert.rejects(() => searchLocations('Lima', async () => response(429, {})), /límite temporal/);
 });
 
 test('simulación: identifica error 5xx del servicio', async () => {
@@ -32,6 +32,10 @@ test('simulación: identifica error 5xx del servicio', async () => {
 
 test('simulación: identifica falta de conexión', async () => {
   await assert.rejects(() => searchLocations('Lima', async () => { throw new TypeError('Failed to fetch'); }), /No hay conexión disponible/);
+});
+
+test('simulación: identifica una consulta cancelada por tiempo de espera', async () => {
+  await assert.rejects(() => getForecast(20, -89, async () => { const error = new Error('aborted'); error.name = 'AbortError'; throw error; }), /tardó demasiado/);
 });
 
 test('los valores meteorológicos cero se conservan', () => {

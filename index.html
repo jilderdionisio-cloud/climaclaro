@@ -3,30 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ClimaClaro: consulta el tiempo actual y el pronóstico de una ciudad." />
-    <title>ClimaClaro | Pronóstico simple y claro</title>
+    <meta name="description" content="ClimaClaro: clima actual y pronóstico real de cualquier ciudad." />
+    <title>ClimaClaro | El clima, con claridad</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header class="site-header"><div class="container header-content"><a class="brand" href="/" aria-label="ClimaClaro, inicio"><span aria-hidden="true">☀</span> ClimaClaro</a><nav aria-label="Navegación principal"><a href="#buscar">Buscar clima</a></nav></div></header>
-    <main class="container">
-      <section class="intro" aria-labelledby="page-title"><p class="eyebrow">El tiempo, explicado</p><h1 id="page-title">Consulta el clima de tu ciudad</h1><p>Escribe una ciudad, elige una coincidencia y obtén las condiciones actuales y los próximos tres días.</p></section>
-      <section id="buscar" class="search-panel" aria-labelledby="search-title">
-        <h2 id="search-title">Buscar una ciudad</h2>
-        <form id="weather-form" novalidate><label for="city-input">Nombre de la ciudad</label><div class="search-row"><input id="city-input" name="city" type="search" placeholder="Por ejemplo, Ciudad de México" autocomplete="off" aria-describedby="search-help" required /><button type="submit">Buscar</button></div><p id="search-help" class="field-help">Presiona Buscar o la tecla Enter para ver coincidencias.</p></form>
-        <button id="location-button" class="text-button" type="button">Usar mi ubicación actual</button>
-        <p id="status-message" class="status-message" role="status" aria-live="polite">Escribe el nombre de una ciudad para comenzar.</p>
-        <section id="matches-section" class="matches" aria-labelledby="matches-title" hidden><h3 id="matches-title">Elige una ubicación</h3><ul id="matches-list" class="matches-list" aria-live="polite"></ul></section>
+  <body data-theme="day">
+    <header class="site-header"><div class="container header-content"><a class="brand" href="#inicio" aria-label="ClimaClaro, inicio"><span aria-hidden="true">◐</span> ClimaClaro</a><nav aria-label="Navegación principal"><a href="#buscar">Buscar</a><a href="#pronostico">Pronóstico</a></nav></div></header>
+    <main id="inicio" class="container">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy"><p class="eyebrow">Clima en tiempo real</p><h1 id="page-title">El cielo, más claro.</h1><p>Consulta el estado actual y los próximos días de cualquier ciudad con datos de Open‑Meteo.</p></div>
+        <div class="weather-orb" aria-hidden="true"><span id="hero-icon">☀️</span></div>
       </section>
-      <section id="weather-results" class="weather-results" aria-labelledby="results-title" hidden>
-        <div class="results-heading"><div><p class="eyebrow">Condiciones actuales</p><h2 id="results-title"></h2></div><p id="updated-at" class="updated-at"></p></div>
-        <div class="metrics-grid"><article class="metric-card primary-card"><p>Temperatura</p><strong id="temperature">—</strong><span id="weather-description">—</span><small id="feels-like">—</small></article><article class="metric-card"><p>Humedad</p><strong id="humidity">—</strong><span>Humedad relativa</span></article><article class="metric-card"><p>Viento</p><strong id="wind">—</strong><span id="wind-direction">—</span></article></div>
-        <section class="forecast" aria-labelledby="forecast-title"><div class="section-heading"><div><p class="eyebrow">Planifica tu semana</p><h2 id="forecast-title">Pronóstico de tres días</h2></div><p>Temperaturas máxima y mínima</p></div><div id="forecast-list" class="forecast-list"></div></section>
+      <section id="buscar" class="search-panel" aria-labelledby="search-title">
+        <div><h2 id="search-title">¿A dónde vamos?</h2><p>La ciudad predeterminada es Mérida, Yucatán, México. Puedes cambiarla cuando quieras.</p></div>
+        <form id="weather-form" novalidate><label class="sr-only" for="city-input">Nombre de la ciudad</label><div class="search-row"><span aria-hidden="true">⌕</span><input id="city-input" name="city" type="search" placeholder="Busca una ciudad" autocomplete="off" aria-describedby="search-help" required /><button id="search-button" type="submit">Buscar clima</button></div><p id="search-help">Escribe una ciudad y presiona Enter.</p></form>
+        <div class="search-actions"><button id="location-button" class="link-button" type="button">⌖ Usar mi ubicación</button><button id="retry-button" class="link-button" type="button" hidden>↻ Reintentar</button></div>
+        <p id="status-message" class="status-message" role="status" aria-live="polite">Cargando Mérida, México…</p>
+        <section id="matches-section" class="matches" aria-labelledby="matches-title" hidden><h3 id="matches-title">Elige la ubicación correcta</h3><ul id="matches-list" class="matches-list" aria-live="polite"></ul></section>
+      </section>
+      <section id="weather-results" class="weather-results" aria-live="polite" aria-busy="true">
+        <div id="loading-skeleton" class="skeleton-layout"><div class="skeleton skeleton-main"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+        <div id="weather-content" hidden>
+          <div class="current-card"><div><p id="location-label" class="location-label">Mérida, México</p><p id="updated-at" class="updated-at"></p><p id="temperature" class="temperature">—</p><p id="weather-description" class="condition">—</p></div><div id="current-icon" class="current-icon" aria-hidden="true">☀️</div></div>
+          <div class="metrics-grid"><article class="metric-card"><span aria-hidden="true">💧</span><p>Humedad</p><strong id="humidity">—</strong></article><article class="metric-card"><span aria-hidden="true">◌</span><p>Sensación térmica</p><strong id="feels-like">—</strong></article><article class="metric-card"><span aria-hidden="true">↝</span><p>Viento</p><strong id="wind">—</strong><small id="wind-direction">—</small></article><article class="metric-card"><span aria-hidden="true">☂</span><p>Probabilidad de lluvia</p><strong id="rain-chance">—</strong><small>Durante el día</small></article></div>
+          <section id="pronostico" class="forecast" aria-labelledby="forecast-title"><div class="section-heading"><div><p class="eyebrow">Próximos días</p><h2 id="forecast-title">Pronóstico de 3 días</h2></div><p>Máxima / mínima</p></div><div id="forecast-list" class="forecast-list"></div></section>
+        </div>
       </section>
     </main>
-    <footer>Datos meteorológicos por <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></footer><script type="module" src="app.js"></script>
+    <footer><span>Datos meteorológicos por </span><a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open‑Meteo ↗</a></footer>
+    <script type="module" src="app.js"></script>
   </body>
 </html>

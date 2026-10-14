@@ -9,10 +9,12 @@ Ofrecer una consulta meteorológica clara y accesible, sin frameworks ni claves 
 ## Funciones
 
 - Busca hasta cinco coincidencias por ciudad y muestra nombre, región y país.
-- Consulta temperatura, humedad y viento actuales, con las unidades entregadas por la API.
-- Presenta tres días de pronóstico: temperatura máxima, mínima y probabilidad de precipitación.
+- Carga automáticamente Mérida, Yucatán, México al abrir la aplicación.
+- Consulta temperatura, condición, humedad, sensación térmica, viento y probabilidad de lluvia actuales con las unidades entregadas por la API.
+- Presenta tres días de pronóstico: icono de condición, temperatura máxima, mínima y probabilidad de precipitación.
 - Permite solicitar la ubicación actual del navegador.
-- Incluye mensajes de carga, resultados vacíos y errores de red, límite de solicitudes y servicio no disponible.
+- Adapta suavemente el fondo y los iconos con la condición meteorológica y el día o la noche reales.
+- Incluye esqueletos de carga, reintento, resultados vacíos y errores de red, tiempo de espera, límite de solicitudes y servicio no disponible.
 - Mantiene foco visible, etiquetas de formulario, navegación con teclado y avisos `aria-live`.
 
 ## Tecnologías
