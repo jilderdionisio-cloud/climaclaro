@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { getForecast, searchLocations } from '../weather-api.js';
 import { formatMetric } from '../weather-format.js';
+import { hasUsableWeatherData } from '../weather-data.js';
 
 const response = (status, body) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 
@@ -42,4 +43,15 @@ test('los valores meteorológicos cero se conservan', () => {
   assert.equal(formatMetric(0, '°C'), '0°C');
   assert.equal(formatMetric(0, '%'), '0%');
   assert.equal(formatMetric(0, ' km/h'), '0 km/h');
+});
+
+test('los datos meteorológicos ausentes son explícitos', () => {
+  assert.equal(formatMetric(undefined, '°C'), 'No disponible');
+  assert.equal(formatMetric(null, '%'), 'No disponible');
+});
+
+test('una respuesta meteorológica incompleta no se considera utilizable', () => {
+  assert.equal(hasUsableWeatherData({ current: {} }), false);
+  assert.equal(hasUsableWeatherData({ daily: { time: [] } }), false);
+  assert.equal(hasUsableWeatherData({ current: {}, daily: { time: ['2026-10-14'] } }), true);
 });
